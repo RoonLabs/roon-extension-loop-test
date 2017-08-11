@@ -1,0 +1,13 @@
+{
+    "name": "roon-extension-settings-testcase",
+    "version": "0.5.0",
+    "description": "Roon Extension demonstrate settings client crashes",
+    "main": "app.js",
+    "author": "Ben Coburn",
+    "license": "",
+    "dependencies": {
+        "node-roon-api": "github:roonlabs/node-roon-api",
+        "node-roon-api-transport": "github:roonlabs/node-roon-api-transport",
+        "node-roon-api-settings": "github:roonlabs/node-roon-api-settings"
+    }
+}
