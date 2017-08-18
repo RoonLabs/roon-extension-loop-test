@@ -32,6 +32,8 @@ var roon = new RoonApi({
                             if ((output.output_id == _output_id) &&
                                 ((zone.state == "stopped") || (zone.state == "paused"))) {
                                 _transport.control(_output_id, "play");
+                                _transport.mute(_output_id, "mute");
+                                _transport.change_volume(_output_id, "absolute", output.volume.min);
                             }
                         });
                     });
