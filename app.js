@@ -7,7 +7,7 @@ var RoonApi          = require("node-roon-api"),
 var _core      = undefined;
 var _transport = undefined;
 var _output_id = "";
-var _next      = false;
+var _mode      = false;
 var _interval  = 5000;
 var _timer     = null;
 
@@ -33,22 +33,28 @@ var roon = new RoonApi({
                 if (data.zones_changed) {
                     data.zones_changed.forEach(zone => {
                         zone.outputs.forEach(output => {
-                            if ((output.output_id == _output_id) &&
-                                ((zone.state == "stopped") || (zone.state == "paused"))) {
-                                _transport.control(_output_id, "play");
-                                _transport.mute(_output_id, "mute");
-                                _transport.change_volume(_output_id, "absolute", output.volume.min);
-                            } else {
-                                if ((_timer == null) &&
-                                    ((_next == "\"next\"") || (_next == "next"))) {
-                                    _timer = setInterval(() => {
-                                        if (_transport) {
-                                            _transport.control(_output_id, "next");
-                                        }
-                                    }, _interval);
+                            if (output.output_id == _output_id) {
+                                if ((_mode == "\"skip\"") || (_mode == "skip")) {
+                                    if (_timer == null) {
+                                        _timer = setInterval(() => {
+                                            if (_transport) {
+                                                _transport.control(_output_id, "next");
+                                            }
+                                        }, _interval);
+                                    }
+                                } else if ((_mode == "\"seek\"") || (_mode == "seek")) {
+                                    console.log(zone.now_playing);
+                                    console.log(zone.now_playing.seek_position !== undefined);
+                                    if (((zone.now_playing != undefined) && (zone.now_playing.seek_position !== undefined) && (zone.now_playing.length != undefined)) &&
+                                        ((zone.now_playing.seek_position == null) ||
+                                         ((zone.now_playing.length - zone.now_playing.seek_position) > 1))) {
+                                        console.log("seek mode triggered");
+                                        _transport.seek(_output_id, "absolute", zone.now_playing.length - 1);
+                                    }
                                 }
                             }
-                        });
+
+                            });
                     });
                 }
             }
@@ -77,8 +83,8 @@ var _layout = [
     },
     {
         "type": "string",
-        "title": "type \"next\" to auto-press next button",
-        "setting": "next"
+        "title": "test mode",
+        "setting": "mode"
     },
     {
         "type": "integer",
@@ -114,8 +120,8 @@ var svc_settings = new RoonApiSettings(roon, {
             if (_values["interval"]) {
                 _interval = _values["interval"];
             }
-            if (_values["next"] != undefined) {
-                _next = _values["next"];
+            if (_values["mode"] != undefined) {
+                _mode = _values["mode"];
             }
         }
         req.send_complete("Success", { "settings" :{
