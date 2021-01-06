@@ -1,13 +1,16 @@
 {
-    "name": "roon-extension-settings-testcase",
-    "version": "0.5.0",
-    "description": "Roon Extension demonstrate settings client crashes",
+    "name": "roon-extension-search-test",
+    "version": "0.1.0",
+    "description": "Roon Extension to test top search results",
     "main": "app.js",
     "author": "Ben Coburn",
     "license": "",
     "dependencies": {
+        "csv-parse": "^4.4.5",
+        "csv-stringify": "^5.3.3",
+        "fs": "0.0.1-security",
         "node-roon-api": "github:roonlabs/node-roon-api",
-        "node-roon-api-transport": "github:roonlabs/node-roon-api-transport",
+        "node-roon-api-browse": "github:roonlabs/node-roon-api-browse",
         "node-roon-api-settings": "github:roonlabs/node-roon-api-settings"
     }
 }
